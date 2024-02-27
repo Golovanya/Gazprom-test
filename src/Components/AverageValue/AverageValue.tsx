@@ -1,19 +1,20 @@
 import React from 'react';
 interface AverageValueProps {
-  averageValue: number | null;
+  averageValue?: number;
 }
 
-const AverageValue: React.FC<AverageValueProps> = ({ averageValue }) => {
+export const AverageValue: React.FC<AverageValueProps> = ({ averageValue }) => {
   return (
     <div>
-      {averageValue !== null && (
+      {averageValue ? (
         <div>
-          <p className='average-title'>Среднее за период</p>
-          <p className='average-value'>{averageValue.toFixed(1).replace('.', ',')} <span className='average-item'>₽</span></p>
+          <p className="average-title">Среднее за период</p>
+          <p className="average-value">
+            {averageValue.toFixed(1).replace('.', ',')}{' '}
+            <span className="average-item">₽</span>
+          </p>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
-
-export default AverageValue;

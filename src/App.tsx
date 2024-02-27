@@ -1,32 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { AppCard } from './Components/AppCard';
 import './App.css';
-import { Theme, presetGpnDefault } from '@consta/uikit/Theme';
 import axios from 'axios';
 import { Loader } from '@consta/uikit/Loader';
-import { MainDATA } from './types/types'
+
+async function fetchData() {
+  try {
+    const { data } = await axios.get(
+      'https://65dcb66ae7edadead7ecbf15.mockapi.io/valute'
+    );
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return {};
+  }
+}
 
 function App() {
-  const[data, setData] = useState<MainDATA[]>([])
-  useEffect(()=>{
-    fetchData()
-  },[])
+  const [data, setData] = useState(null);
 
-  async function fetchData (){
-      try{
-          const response  = await axios.get('https://65dcb66ae7edadead7ecbf15.mockapi.io/valute')
-          setData(response.data)
-      } catch{
-        alert('ошибка при загрузке данных')
-      }
-  }
+  const fetchDataAsync = async () => {
+    const fetchedData = await fetchData();
+    setData(fetchedData);
+  };
 
-  return (
-    <Theme preset={presetGpnDefault}>
-      {!data?<Loader/>:<AppCard data={data}/>}
-      
-    </Theme>
-  );
+  useEffect(() => {
+    fetchDataAsync();
+  }, []);
+
+  if (!data) return <Loader />
+
+  return data && Object.values(data).length ? <AppCard data={data} /> : <p>Данных нет</p>
 }
 
 export default App;

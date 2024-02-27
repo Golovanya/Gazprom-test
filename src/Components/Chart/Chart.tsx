@@ -1,19 +1,14 @@
 import React from 'react';
-import { ReactECharts } from '../../Echarts/ReactECharts'
+import { ReactECharts } from '../../Echarts/ReactECharts';
 
 interface ChartProps {
-  chartOption: any
+  chartOption: any;
 }
 
 const Chart: React.FC<ChartProps> = ({ chartOption }) => {
   return (
-    <div style={{ width: '940px', height: '285px',  }}>
-      <ReactECharts
-        option={chartOption}
-        theme="light"
-        loading={false}
-       
-      />
+    <div className="chart">
+      <ReactECharts option={chartOption} theme="light" loading={false} />
     </div>
   );
 };

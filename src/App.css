@@ -11,11 +11,23 @@ html, body, #root{
     height: 100%;
 }
 
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, rgb(238, 238, 238), rgb(224, 224, 224))
+}
+
 #root{
     display: flex;
     justify-content: center;
     align-items: center;
-   
+    
+}
+
+.chart{
+    width: 985px;
+    height: 285px;
 }
 
 h1{
@@ -28,6 +40,7 @@ h1{
     font-size: 48px;
     font-weight: 400px;
     margin-top: 20px;
+    text-align: center;
 }
 
 .average-title{
@@ -46,7 +59,7 @@ h1{
     padding-left: 13px;
     padding-top: 8px;
     padding-right: 8px;
-   
+    background-color: white;
 }
 
 .body-chart{
@@ -65,4 +78,26 @@ header{
 }
 h1{
     text-transform: uppercase;
+}
+
+@media (width<1200px) {
+    .app-card{
+        width: 800px;
+        height: 470px;
+    }
+    .chart{
+        width: 600px;
+    }
+    .body-chart{
+        flex-direction: column;
+    }
+}
+
+@media (width<800px){
+    .app-card{
+        width: 400px;
+    }
+    .chart{
+        width: 350px;
+    }
 }

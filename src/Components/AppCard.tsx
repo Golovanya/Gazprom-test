@@ -1,37 +1,49 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import Header from './Header/Header';
+import { Header } from './Header/Header';
 import Chart from './Chart/Chart';
-import AverageValue from './AverageValue/AverageValue';
+import { AverageValue } from './AverageValue/AverageValue';
 import { Card } from '@consta/uikit/Card';
-import { ISymbolsText, } from '../types/types';
-import { mockData } from '../data/data';
+import { IData, ISymbolsText } from '../types/types';
+import { ChoiceGroupPropOnChange } from '@consta/uikit/ChoiceGroup';
 
 interface CurrencyChartProps {
-  data: typeof mockData; 
-}                                                    // ТУТ ТОЖЕ ХОТЕЛ СДЕЛАТЬ ИТЕРФЕЙС MainDATA но он ошибку на него кидает
+  data: IData[];
+}
 
+const SYMBOLS_TEXT_MAP: ISymbolsText = {
+  $: 'Курс доллара',
+  '€': 'Курс евро',
+  '¥': 'Курс юаня',
+};
 
-const CurrencyChart: React.FC<CurrencyChartProps> = ({ data }) => {                                           
+const CurrencyChart: React.FC<CurrencyChartProps> = ({ data }) => {
   const [selectedCurrency, setSelectedCurrency] = useState('Курс доллара');
-  const [averageValue, setAverageValue] = useState<number | null>(null);
-  const CurrencySymbolsText:ISymbolsText = {
-    '$': 'Курс доллара',
-    '€': 'Курс евро',
-    '¥': 'Курс юаня',
-  };
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCurrency(CurrencySymbolsText[event.value]);              // ПОЯВЛЯЕТСЯ ОШИБКА ЕСЛИ ПОСТАВИТЬ event.target.value
-  };
+  const [averageValue, setAverageValue] = useState<number>();
+
+  const handleChange: ChoiceGroupPropOnChange<string, false> = useCallback(
+    (event) => {
+      setSelectedCurrency(SYMBOLS_TEXT_MAP[event.value]);
+    },
+    []
+  );
 
   // Формирование данных для графика
+
+  // Фильтрация данных по индикатору
   const filteredData = data.filter(
     (item) => item.indicator === selectedCurrency
   );
-  let minValue = Math.min.apply(
+
+  // Определение минимального значения
+  const minValue = Math.min.apply(
     null,
     filteredData.map((d) => d.value)
   );
-  let interval = minValue % 2 === 0 ? 3 : 2;
+
+  // Определение интервала в зависимости от минимального значения
+  const interval = minValue % 2 === 0 ? 3 : 2;
+
+  // Стилизация графика
   const chartOption = {
     tooltip: {
       show: true,
@@ -44,7 +56,7 @@ const CurrencyChart: React.FC<CurrencyChartProps> = ({ data }) => {
       top: 20,
       bottom: 20,
       left: 50,
-      right: 20,
+      right: 0,
     },
     xAxis: {
       boundaryGap: false,
@@ -68,7 +80,7 @@ const CurrencyChart: React.FC<CurrencyChartProps> = ({ data }) => {
         },
       },
       axisLabel: {
-        formatter: function (value:number) {
+        formatter: function (value: number) {
           if (value > minValue) {
             return value;
           } else {
@@ -103,9 +115,9 @@ const CurrencyChart: React.FC<CurrencyChartProps> = ({ data }) => {
   }, [selectedCurrency, data, calculateAverage]);
 
   return (
-    <Card form="round" border className="app-card">   
+    <Card form="round" border className="app-card">
       <Header selectedCurrency={selectedCurrency} handleChange={handleChange} />
-        <div className="body-chart">
+      <div className="body-chart">
         <Chart chartOption={chartOption} />
         <AverageValue averageValue={averageValue} />
       </div>
